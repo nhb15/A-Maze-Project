@@ -16,6 +16,15 @@ public class AStarNode {
 
     private int[] idxLocation;
 
+    /**
+     * Constructor to setup a new node, includes index location in gui
+     * @param idxLocation in [x,y] format
+     */
+    public AStarNode(int[] idxLocation, JButton button){
+        this.idxLocation = idxLocation;
+        this.button = button;
+    }
+
     public void setCostFromInitial(AStarNode node){
         //FIXME:
         //node.costFromInitial = some sort of cost analysis from starting node. Should be exact
@@ -24,6 +33,16 @@ public class AStarNode {
     public void setEstimatedCostToDest(AStarNode node){
         //FIXME:
         //node.estimatedCostToDest = heuristic to final node - estimated since we don't know if there are obstacles in the way
+        /**
+         * POSSIBLE HEURISTIC IDEAS:
+         *
+         * 1. We do a combination of hypotenuse of the array values AND a search ahead of each node (a few nodes ahead to see if there are obstacles?)
+         *
+         * 2. We follow what's on the stanford link: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7 - would depend on whether we want diagonal control
+         *
+         * 3. In a probe ahead of the node, we could check not ONLY for obstacles but also the edge of the map ( or do we just make the edge of the map an immovable obstacle?)
+         */
+
     }
 
 
@@ -36,4 +55,9 @@ public class AStarNode {
         isObstacle = obstacle;
         //FIXME: Change color of block
     }
+
+    public JButton getButton(){
+        return this.button;
+    }
+
 }
