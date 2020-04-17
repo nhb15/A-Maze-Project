@@ -1,5 +1,9 @@
 package AStarMazeProject;
 
+import javax.swing.*;
+import java.awt.*;
+import java.util.PriorityQueue;
+
 /**
  * A PROJECT MADE BY NATE AND JAKE
  *
@@ -10,11 +14,48 @@ package AStarMazeProject;
  *
  */
 
-public class AStarDriver {
+public class AStarDriver<E  extends Comparable<E>> {
+
+    private static final int WIDTHNODES = 20;
+    private static final int HEIGHTNODES = 20;
+
+    private static int numNodesVisited = 0;
+
+    private static AStarNode[][] nodeArr = new AStarNode[WIDTHNODES][HEIGHTNODES];
+
+
+    private static AStarNode startNode;
+    private static AStarNode destNode;
+
+    /**
+     * Regardless of which data structure we use to track visitedNodes, let's track the actual size in numNodesVisited above
+     */
+
+    private static AStarNode[] visitedNodes = new AStarNode[WIDTHNODES * HEIGHTNODES];
+
+    /**
+     * FOR NOW, we COULD use the standard priority queue so that we can get the project rolling. But, I'm not sure it's what we need
+     * //private static PriorityQueue<AStarNode> pqAdjacentNodes;
+     */
+
 
     public static void main(String[] args) {
 
-        AStarGUI gui = new AStarGUI();
+        for (int i = 0; i < WIDTHNODES; i++){
+            for (int j = 0; j < HEIGHTNODES; j++){
+                int[] temp = {i,j};
+                AStarNode node = new AStarNode(temp);
+                nodeArr[i][j] = node;
+            }
+        }
+
+        startNode = nodeArr[0][0];
+        destNode = nodeArr[WIDTHNODES - 1][HEIGHTNODES - 1];
+
+        AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
+
+        //pqAdjacentNodes.add(nodeArr[0][0]);
+
         /*We'll want to make a priority queue that takes Nodes with f as their priority value, as well as a seperate data structure to hold
             nodes we have already visited
         
@@ -63,5 +104,36 @@ public class AStarDriver {
          */
     }
 
+    public static AStarNode[][] getNodeArr() {
+        return nodeArr;
+    }
+
+    public static void setNodeArr(AStarNode[][] nodeArr) {
+        AStarDriver.nodeArr = nodeArr;
+    }
+
+    public static int getNumNodesVisited() {
+        return numNodesVisited;
+    }
+
+    public static void setNumNodesVisited(int numNodesVisited) {
+        AStarDriver.numNodesVisited = numNodesVisited;
+    }
+
+    public static AStarNode getStartNode() {
+        return startNode;
+    }
+
+    public static void setStartNode(AStarNode startNode) {
+        AStarDriver.startNode = startNode;
+    }
+
+    public static AStarNode getDestNode() {
+        return destNode;
+    }
+
+    public static void setDestNode(AStarNode destNode) {
+        AStarDriver.destNode = destNode;
+    }
 
 }

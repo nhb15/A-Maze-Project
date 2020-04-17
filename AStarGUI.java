@@ -12,25 +12,16 @@ import java.awt.event.*;
 
 public class AStarGUI extends JFrame implements ActionListener {
 
-    private final int WIDTHNODES = 20;
-    private final int HEIGHTNODES = 20;
-
-    private AStarNode[][] nodeArr = new AStarNode[WIDTHNODES][HEIGHTNODES];
-
     //Constructor should initialize all the inital values
-    public AStarGUI(){
+    public AStarGUI(int WIDTHNODES, int HEIGHTNODES){
 
+        AStarNode[][] nodeArr = AStarDriver.getNodeArr();
         setTitle("Nate and Jake's A* Algorithm GUI");
 
 
         setLayout(new GridBagLayout());
         GridBagConstraints layoutConst = null;
         layoutConst = new GridBagConstraints();
-
-        /**
-         * FIXME: Do we want an array of nodes? or our nodes hold the index?
-         */
-
 
         for (int i = 0; i < WIDTHNODES; i++){
             for (int j = 0; j < HEIGHTNODES; j++){
@@ -39,10 +30,8 @@ public class AStarGUI extends JFrame implements ActionListener {
                 button.setActionCommand("" + i + ","+ j);
                 button.setBackground(Color.gray);
                 button.addActionListener(this);
-                //buttonArr[i][j] = button;
 
-                AStarNode node = new AStarNode(temp, button);
-                nodeArr[i][j] = node;
+                nodeArr[i][j].setButton(button);
 
                 layoutConst = new GridBagConstraints();
                 layoutConst.gridx = i;
@@ -67,22 +56,22 @@ public class AStarGUI extends JFrame implements ActionListener {
         int xIdx = Integer.parseInt(indices[0]);
         int yIdx = Integer.parseInt(indices[1]);
 
-        nodeArr[xIdx][yIdx].getButton().setBackground(Color.black);
-        nodeArr[xIdx][yIdx].setObstacle(true);
+        AStarNode[][] nodeArr = AStarDriver.getNodeArr();
+        if (nodeArr[xIdx][yIdx].getIsObstacle()) {
+            nodeArr[xIdx][yIdx].getButton().setBackground(Color.gray);
+            nodeArr[xIdx][yIdx].setObstacle(false);
+        }
+        else {
+            nodeArr[xIdx][yIdx].getButton().setBackground(Color.black);
+            nodeArr[xIdx][yIdx].setObstacle(true);
+        }
+
         //FIXME: REMOVE NODE FROM AVAILABLE PATHS?
 
         //FIXME: CHECK IF NODE WAS IN PATH, IF NOT THEN RECALCULATE PATH
 
 
-        //if (event.getSource() == )
-        //obtain the node, change the color, make it an obstacle or not an obstacle
 
     }
-
-    /**
-     * Have a button to click to add obstacles,
-     * have a button that allows for recalculation
-     */
-
 
 }
