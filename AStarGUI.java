@@ -6,6 +6,8 @@ import java.awt.event.*;
 
 /**
  * WHEN A USER ADDS A BLOCK, CHECK IF THE BLOCK IS IN THE CURRENT ROUTE. IF NOT, DO NOT RECALCULATE. IF SO, RECALCULATE.
+ *
+ * POTENTIALLY USING A GRAPH FOR GUI INSTEAD OF NODES? NEED TO CALCULATE EDGES AND WOULD HELP COST FROM BASE
  */
 
 public class AStarGUI extends JFrame implements ActionListener {
@@ -59,16 +61,11 @@ public class AStarGUI extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent event){
 
-        //FIXME:
-        //Do we make an array of buttons / or nodes / or something and then search it using a search method? 
-        System.out.println(event.getSource());
-        System.out.println(event.getActionCommand());
 
         //This allows us to use constant time retrieval of which button is pushed
         String[] indices = event.getActionCommand().split(",");
         int xIdx = Integer.parseInt(indices[0]);
         int yIdx = Integer.parseInt(indices[1]);
-        System.out.println("Button is: " + xIdx + yIdx);
 
         nodeArr[xIdx][yIdx].getButton().setBackground(Color.black);
         nodeArr[xIdx][yIdx].setObstacle(true);

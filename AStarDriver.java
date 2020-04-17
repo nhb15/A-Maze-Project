@@ -39,6 +39,28 @@ public class AStarDriver {
                 3)
 
         */
+
+        /**
+         * TASKS TO FOCUS ON:
+         *
+         * 1. (NATE) Make list of nodes IN driver class, passable to GUI
+         * 2. Make
+         * 3. (NATE) Priority Queue that accepts F value as comparator (in driver)
+         * 4. (JAKE) Decide on data structure for closed set (and have reasons for report)
+         * 5. (BOTH) Pass or update information on GUI once node is added to closed set (AKA the path - turn blue) https://www.redblobgames.com/pathfinding/a-star/introduction.html
+         *      -unexplored, explored, actual path (if we do this, we also need to pass explored nodes - very similar to actual path information pass)
+         *      -Consider best way to pass information from GUI back to driver for updated obstacles as well.
+         * 6. (NATE) Create method to generate costFromInitial - (POSSIBLY: counting nodes in VISITED list + 1 - most likely)
+         * 7. (NATE) Create method to generate heuristic (estimatedCostToDest) - Diagonal Distance - http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
+         * 8. (JAKE) Create method to inserts STARTNODE (AND COMPLETES JAKE'S NOTES FROM ABOVE)
+         * 9. (NATE) Allow obstacles to be reversed
+         * 10. (NATE) lookup github making someone else an admin
+         *
+         * ONCE ABOVE IS DONE:
+         * 10. Write a README
+         * 11. Create Presentation (8-15)
+         * 11. .If TIME ALLOWS, change heuristic to show different speeds/efficiency
+         */
     }
 
 

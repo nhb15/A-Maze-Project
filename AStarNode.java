@@ -4,9 +4,9 @@ import javax.swing.*;
 
 public class AStarNode {
 
-    private int costFromInitial; //synonymous to g in literature
-    private int estimatedCostToDest; //synonymous to h, the heuristic, in literature
-    private int totalCost; //synonymous to f, the sum of two variables above
+    private double costFromInitial; //synonymous to g in literature
+    private double estimatedCostToDest; //synonymous to h, the heuristic, in literature
+    private double totalCost; //synonymous to f, the sum of two variables above
     //Sorted stack - research heuristic ideas and bring
 
     private JButton button; //This button will allow the user to click on it to include an obstacle
@@ -23,6 +23,11 @@ public class AStarNode {
     public AStarNode(int[] idxLocation, JButton button){
         this.idxLocation = idxLocation;
         this.button = button;
+
+        this.costFromInitial = Double.POSITIVE_INFINITY;
+        this.estimatedCostToDest = Double.POSITIVE_INFINITY;
+        this.totalCost = Double.POSITIVE_INFINITY;
+
     }
 
     public void setCostFromInitial(AStarNode node){
