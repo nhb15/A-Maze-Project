@@ -87,7 +87,7 @@ public class AStarDriver<E  extends Comparable<E>> {
          * 1. (NATE) Make list of nodes IN driver class, passable to GUI
          * 2. Make
          * 3. (NATE) Priority Queue that accepts F value as comparator (in driver)
-         * 4. (JAKE) Decide on data structure for closed set (and have reasons for report)
+         * 4. (JAKE) Decide on data structure for closed set (and have reasons for report) see lines 106-108
          * 5. (BOTH) Pass or update information on GUI once node is added to closed set (AKA the path - turn blue) https://www.redblobgames.com/pathfinding/a-star/introduction.html
          *      -unexplored, explored, actual path (if we do this, we also need to pass explored nodes - very similar to actual path information pass)
          *      -Consider best way to pass information from GUI back to driver for updated obstacles as well.
@@ -101,6 +101,11 @@ public class AStarDriver<E  extends Comparable<E>> {
          * 10. Write a README
          * 11. Create Presentation (8-15)
          * 11. .If TIME ALLOWS, change heuristic to show different speeds/efficiency
+         
+         
+         * 4. The closed or visited list needs to have both fast insertion and fast search, and a hashmap has both O(1) average for 
+         *    both those functions (See big O cheat sheet). Only downside is hashmaps do not support access functions(unclear what that is tbh).
+         * 
          */
     }
 
