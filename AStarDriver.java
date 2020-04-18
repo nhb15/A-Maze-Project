@@ -37,7 +37,12 @@ public class AStarDriver<E  extends Comparable<E>> {
      * FOR NOW, we COULD use the standard priority queue so that we can get the project rolling. But, I'm not sure it's what we need
      * //private static PriorityQueue<AStarNode> pqAdjacentNodes;
      */
-
+    
+    //create priority queue for open set
+	PriorityQueue<AStarNode> open = new PriorityQueue<AStarNode>();
+	//create hashmap for closed set
+	HashMap<String, AStarNode> closed = new HashMap<String, AStarNode>();
+    
 
     public static void main(String[] args) {
 
@@ -72,12 +77,17 @@ public class AStarDriver<E  extends Comparable<E>> {
             From there, we'll want to initialize all the distances in each node to infinity, as well as initializing each node's
             previous pointer to null
             
-            We first enter our start node to the Priority Queue and the visited database (do we add the start node here or in the while loop?) 
+            We first enter our start node to the Priority Queue and the visited hashmap (do we add the start node here or in the while loop?) 
             then enter a while loop until priority queue is empty that:
                 1)Pops top prioritized value off of queue and assigns to current node
-                2)Adds all nodes that are non obstacles and adjacent to current node to both the prioritized queueu as well as 
-                  the visited database
-                3)
+                2)Adds current to visited database, need to figure out hash method, right now have it written to use strings as a key
+                3)BASE CASE: if current node is goal, return route by calling route building method (adding to list of tasks)
+                4)Else, for each neighbor of current, check if neighbor is already in the visited hashmap. 
+                        if yes ---> skip node
+                        if no  ---> 1) evaluate and update costFromInitial, estimatedCostToDest, and totalCost for each neighbor
+                                    2) add to priority queue
+                                    
+                                    
 
         */
 
@@ -96,6 +106,7 @@ public class AStarDriver<E  extends Comparable<E>> {
          * 8. (JAKE) Create method to inserts STARTNODE (AND COMPLETES JAKE'S NOTES FROM ABOVE)
          * 9. (NATE) Allow obstacles to be reversed
          * 10. (NATE) lookup github making someone else an admin
+         * 11. (JAKE) Build route building method that can be recursively called to build the route and print it out
          *
          * ONCE ABOVE IS DONE:
          * 10. Write a README
