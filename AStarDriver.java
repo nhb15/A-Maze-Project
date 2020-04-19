@@ -2,7 +2,8 @@ package AStarMazeProject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.PriorityQueue;
+import java.util.PriorityQueue
+import java.util.Stack;
 
 /**
  * A PROJECT MADE BY NATE AND JAKE
@@ -120,6 +121,21 @@ public class AStarDriver<E  extends Comparable<E>> {
          */
     }
 
+	/*
+	Below is a route builder function, which has not been tested but 
+	*/
+  public Stack routeBuilder(AStarNode start, AStarNode end) {
+    	Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
+    	AStarNode current = end; //current portion of path being added to linkedlist
+    	
+    	while(current!=start) { //loops until start is hit
+    		route.add(current); //add current node to list
+    		current = current.getPrevious(); //update current to previous
+    	}
+    	
+    	return route;//FIXME edit to properly print stack first in last out
+    }
+	
     public static AStarNode[][] getNodeArr() {
         return nodeArr;
     }
