@@ -8,6 +8,7 @@ public class AStarNode {
     private double estimatedCostToDest; //synonymous to h, the heuristic, in literature
     private double totalCost; //synonymous to f, the sum of two variables above
     //Sorted stack - research heuristic ideas and bring
+    private AStarNode previous; //used to assist in route building by linking nodes in the path found to one another
 
     private JButton button; //This button will allow the user to click on it to include an obstacle
                             //The color correlates to whether it is unused (white/gray) , part of the path (blue), or is an obstacle (black)
@@ -113,6 +114,14 @@ public class AStarNode {
 
     public void setButton(JButton button) {
         this.button = button;
+    }
+    
+    public AStarNode getPrevious(){
+        return this.previous;
+    }
+    
+    public void setPrevious(AStarNode previous){
+        this.previous = previous;
     }
 
 }
