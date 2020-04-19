@@ -120,10 +120,13 @@ public class AStarDriver<E  extends Comparable<E>> {
          * 
          */
     }
-
-	/*
-	Below is a route builder function, which has not been tested but 
-	*/
+/**
+     * function to build path from AStar stored values
+     * uses stack to store nodes in path, using due to First In Last Out print ability
+     * @param AStarNode start node
+     * @param AStarNode end node
+     * @return FIXME either the full Stack, or a recursive call to pop? Need to pass to GUI as well
+     */
   public Stack routeBuilder(AStarNode start, AStarNode end) {
     	Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
     	AStarNode current = end; //current portion of path being added to linkedlist
@@ -135,6 +138,31 @@ public class AStarDriver<E  extends Comparable<E>> {
     	
     	return route;//FIXME edit to properly print stack first in last out
     }
+	
+    /**
+     * function to find neighbors of current node based on row and column position. 
+     * Uses same technique found in array map method, assigning a temp int array to hold idxLocation, then 
+     * subsequently updating row and col to the first and second values in that array. Stores values in set, which can then be easily
+     * cycled through when being considered in the AStar algorithm itself
+     * @param AStarNode
+     * @return set composed of all neighbors of input node
+     */
+    public Set neighborNodes(AStarNode current) {
+    	Set<AStarNode> neighbors = null;
+    	int row     = current.getIdxLocation()[0];//I think this should get the row value from the node
+    	int col     = current.getIdxLocation()[1];//should get column value from node
+    	
+    	for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
+    		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
+    		if((i!=row) && (j!=col)) {
+    			int [] temp = {i, j};
+    			AStarNode node = new AStarNode(temp);
+    			neighbors.add(node);
+    			}
+    		}
+    	}
+    	return neighbors;
+    }	
 	
     public static AStarNode[][] getNodeArr() {
         return nodeArr;
