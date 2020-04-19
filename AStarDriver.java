@@ -153,7 +153,7 @@ public class AStarDriver<E  extends Comparable<E>> {
     	int col     = current.getIdxLocation()[1];//should get column value from node
     	
     	for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
-    		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
+    		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby column positions
     		if((i!=row) && (j!=col)) {
     			int [] temp = {i, j};
     			AStarNode node = new AStarNode(temp);
