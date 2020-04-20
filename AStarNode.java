@@ -101,7 +101,7 @@ public class AStarNode {
 
     public void setObstacle(boolean obstacle) {
         isObstacle = obstacle;
-        //FIXME: Change color of block
+
     }
 
     public boolean getIsObstacle(){
@@ -123,5 +123,14 @@ public class AStarNode {
     public void setPrevious(AStarNode previous){
         this.previous = previous;
     }
+
+    public int[] getIdxLocation() {
+        return idxLocation;
+    }
+
+    public void setIdxLocation(int[] idxLocation) {
+        this.idxLocation = idxLocation;
+    }
+
 
 }

@@ -3,6 +3,7 @@ package AStarMazeProject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Stack;
 
 /**
  * WHEN A USER ADDS A BLOCK, CHECK IF THE BLOCK IS IN THE CURRENT ROUTE. IF NOT, DO NOT RECALCULATE. IF SO, RECALCULATE.
@@ -72,6 +73,19 @@ public class AStarGUI extends JFrame implements ActionListener {
 
 
 
+    }
+
+    /**
+     * Updates the color of the route with blue nodes on the GUI
+     * @param route is constructed in the driver
+     */
+    public void updateRouteGUI(Stack<AStarNode> route){
+
+        for (AStarNode node : route){
+            node.getButton().setBackground(Color.blue);
+        }
+
+        revalidate();
     }
 
 }

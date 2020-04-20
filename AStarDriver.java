@@ -2,7 +2,9 @@ package AStarMazeProject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.PriorityQueue
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.Stack;
 
 /**
