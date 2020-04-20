@@ -186,7 +186,42 @@ public class AStarDriver<E  extends Comparable<E>> {
     	}
     	return true;
     }
-	
+	/**
+	 * AStar algorithm that finds optimal path by putting all neighbor nodes not already considered
+	 * into a priority queue with the priority value being the total cost, found from a sum of the heuristic
+	 * and the cost from initial value. Once goal is reached, routebuilder is called. 
+	 * @param start: starting node in map
+	 * @param goal: target node in map
+	 */
+	public void AStar(AStarNode start, AStarNode goal){
+		
+		//add start node to open list
+		open.add(start);
+		int tracker = 575;//initialize tracker variable used for hash key value
+		//while open is not empty, poll value from pqueue and assign to current
+		while(!open.isEmpty()) {
+			current = open.poll();
+			listofNeighbors = current.neighborNodes(current);
+			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
+				//base case, if current is node, call route builder and quit for loop
+				if(current==destNode) {
+					routeBuilder(startNode, current);
+					break;
+				}
+				//checks if current value is in closed list and or an obstacle, if not adds to list
+				if(!closed.containsValue(current) && !current.isObstacle()) {
+					current.setCostFromInitial(current.findCostFromInitial());//updates current node's cost from initial value
+					current.setEstimatedCostToDest(current.findEstimatedCostToDest());//updates current node's estimated cost to destination
+					closed.put(tracker, current);//adds current value to closed list using tracker as key for hash
+					open.add(current);//add current value to open priority queue
+					current.setTotalCost(current.findEstimatedCostToDest(), current.findCostFromInitial());//update current total cost with previously computed cost to destination and cost from initial
+					++tracker;
+				}
+			}
+		}
+    	        
+    }
+
     public static AStarNode[][] getNodeArr() {
         return nodeArr;
     }
