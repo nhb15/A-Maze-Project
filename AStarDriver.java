@@ -160,6 +160,8 @@ public class AStarDriver<E  extends Comparable<E>> {
     			if((i!=row) && (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
     				if(inBounds(i, j)) { //checks if considered node is within bounds of graph
     					int [] temp = {i, j};
+
+    					//FIXME: Do we really want to be creating a new node here? We already have nodes craeted, I think we just need to grab it
     					AStarNode node = new AStarNode(temp);
     					neighbors.add(node);
     				}
@@ -210,6 +212,8 @@ public class AStarDriver<E  extends Comparable<E>> {
 				}
 				//checks if current value is in closed list and or an obstacle, if not adds to list
 				if(!closed.containsValue(current) && !current.isObstacle()) {
+
+					//FIXME: Are we using each cost individually? Or just the total cost? We may be able to consolidate some of this code
 					current.setCostFromInitial(current.findCostFromInitial());//updates current node's cost from initial value
 					current.setEstimatedCostToDest(current.findEstimatedCostToDest());//updates current node's estimated cost to destination
 					closed.put(tracker, current);//adds current value to closed list using tracker as key for hash
