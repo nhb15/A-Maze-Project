@@ -88,4 +88,6 @@ public class AStarGUI extends JFrame implements ActionListener {
         revalidate();
     }
 
+    //FIXME: NEED A NODES CONSIDERED UPDATE AS WELL
+
 }

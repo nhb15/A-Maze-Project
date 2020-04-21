@@ -30,6 +30,9 @@ public class AStarDriver<E  extends Comparable<E>> {
     private static AStarNode startNode;
     private static AStarNode destNode;
 
+	private static AStarNode temp;
+	private static AStarNode current;
+
     /**
      * Regardless of which data structure we use to track visitedNodes, let's track the actual size in numNodesVisited above
      */
@@ -152,18 +155,23 @@ public class AStarDriver<E  extends Comparable<E>> {
      */
     public Set neighborNodes(AStarNode current) {
     	Set<AStarNode> neighbors = null;
+		System.out.println();
     	int row     = current.getIdxLocation()[0];//I think this should get the row value from the node
     	int col     = current.getIdxLocation()[1];//should get column value from node
 
-    	for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
+		/**
+		 * If above doesn't work, we can do:
+		 * int[] tempIdx = current.getIdxLocation();
+		 * int tempX = tempIdx[0];
+		 *
+		 */
+
+		for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
     		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
     			if((i!=row) && (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
     				if(inBounds(i, j)) { //checks if considered node is within bounds of graph
-    					int [] temp = {i, j};
 
-    					//FIXME: Do we really want to be creating a new node here? We already have nodes craeted, I think we just need to grab it
-    					AStarNode node = new AStarNode(temp);
-    					neighbors.add(node);
+    					neighbors.add(nodeArr[i][j]);
     				}
     			}
     		}
@@ -203,22 +211,33 @@ public class AStarDriver<E  extends Comparable<E>> {
 		//while open is not empty, poll value from pqueue and assign to current
 		while(!open.isEmpty()) {
 			current = open.poll();
-			listofNeighbors = current.neighborNodes(current);
+
+			numNodesVisited++;
+
+			if (open.isEmpty()){
+				temp = current;
+			}
+			else {
+				//Temp holds the previous node, so we can set it to previous
+				current.setPrevious(temp);
+				temp = current;
+			}
+
+			Set<AStarNode> listofNeighbors = neighborNodes(current);
 			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
 				//base case, if current is node, call route builder and quit for loop
-				if(current==destNode) {
+				if(current.equals(destNode)) {
 					routeBuilder(startNode, current);
 					break;
 				}
 				//checks if current value is in closed list and or an obstacle, if not adds to list
 				if(!closed.containsValue(current) && !current.isObstacle()) {
 
-					//FIXME: Are we using each cost individually? Or just the total cost? We may be able to consolidate some of this code
-					current.setCostFromInitial(current.findCostFromInitial());//updates current node's cost from initial value
-					current.setEstimatedCostToDest(current.findEstimatedCostToDest());//updates current node's estimated cost to destination
-					closed.put(tracker, current);//adds current value to closed list using tracker as key for hash
+					closed.put("" + tracker, current);//adds current value to closed list using tracker as key for hash
+
 					open.add(current);//add current value to open priority queue
-					current.setTotalCost(current.findEstimatedCostToDest(), current.findCostFromInitial());//update current total cost with previously computed cost to destination and cost from initial
+
+					current.setTotalCost(current.findTotalCost());//update current total cost with computed cost to destination and cost from initial
 					++tracker;
 				}
 			}

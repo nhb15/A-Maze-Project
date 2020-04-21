@@ -1,11 +1,13 @@
 package AStarMazeProject;
 
 import javax.swing.*;
+import java.util.Set;
 
 public class AStarNode {
 
     private double costFromInitial; //synonymous to g in literature
     private double estimatedCostToDest; //synonymous to h, the heuristic, in literature
+
     private double totalCost; //synonymous to f, the sum of two variables above
     //Sorted stack - research heuristic ideas and bring
     private AStarNode previous; //used to assist in route building by linking nodes in the path found to one another
@@ -16,6 +18,8 @@ public class AStarNode {
     private boolean isObstacle; //The tracker for whether a node is an obstacle or a potential path member
 
     private int[] idxLocation;
+
+    private static Set<AStarNode> listofNeighbors;
 
     /**
      * Constructor to setup a new node, includes index location in gui
@@ -34,7 +38,7 @@ public class AStarNode {
      * This method sets a node's cost from our starting location. It grabs the number of nodes visited already and adds 1, since if this node is picked it will be that value.
      * Technically, this +1 doesn't actually matter as long as we're consistent, but it makes sense.
      */
-    public void setCostFromInitial(int cost){
+    public void setCostFromInitial(double cost){
 
         this.costFromInitial = cost;
     }
@@ -88,11 +92,23 @@ public class AStarNode {
 
     }
 
-    public void setEstimatedCostToDest(int cost){
+    public void setEstimatedCostToDest(double cost){
 
         this.estimatedCostToDest = cost;
     }
 
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public double findTotalCost(){
+        return (findCostFromInitial() + findEstimatedCostToDest());
+    }
 
 
     public boolean isObstacle() {
@@ -131,6 +147,33 @@ public class AStarNode {
     public void setIdxLocation(int[] idxLocation) {
         this.idxLocation = idxLocation;
     }
+
+
+    //FIXME FOR PRETTINESS?
+    @Override
+    public boolean equals(Object obj){
+        AStarNode node = (AStarNode)obj;
+
+        if (this.getIdxLocation().equals(node.getIdxLocation())){
+            return true;
+        }
+
+        int[] tempIdx = this.getIdxLocation();
+        int tempX = tempIdx[0];
+        int tempY = tempIdx[1];
+
+        int[] nodeIdx = node.getIdxLocation();
+        int nodeX = nodeIdx[0];
+        int nodeY = nodeIdx[1];
+
+        if (tempX == nodeX && tempY == nodeY){
+            return true;
+        }
+        return false;
+
+        //return this.getIdxLocation() == node.getIdxLocation(); FANCY VERSION?
+    }
+
 
 
 }
