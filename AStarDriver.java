@@ -64,9 +64,11 @@ public class AStarDriver{
         startNode = nodeArr[0][0];
         startNode.setTotalCost(0);
 
-        destNode = nodeArr[18][18];
+        destNode = nodeArr[5][5];
 
 		nodeArr[1][1].setObstacle(true);
+		nodeArr[3][3].setObstacle(true);
+		nodeArr[3][4].setObstacle(true);
 
         AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
 
@@ -239,6 +241,8 @@ public class AStarDriver{
 		//while open is not empty, poll value from pqueue and assign to current
 		while(!open.isEmpty()) {
 			current = open.poll();
+			System.out.println(current.getIdxLocation()[0]);
+			System.out.println(current.getIdxLocation()[1]);
 
 
 			if (current != startNode) {
@@ -259,7 +263,9 @@ public class AStarDriver{
 				return;
 			}
 
+
 			Set<AStarNode> listofNeighbors = neighborNodes(current);
+			open.clear();
 			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
 				//base case, if current is node, call route builder and quit for loop
 
@@ -283,9 +289,6 @@ public class AStarDriver{
 					closed.put("" + tracker, node);//adds current value to closed list using tracker as key for hash
 
 					open.add(node);//add current value to open priority queue
-
-
-
 
 					++tracker;
 				}
