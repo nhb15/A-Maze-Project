@@ -174,10 +174,9 @@ public class AStarNode implements Comparable<AStarNode>{
         //return this.getIdxLocation() == node.getIdxLocation(); FANCY VERSION?
     }
 
-
-    //FIXME: IS THIS THE RIGHT COMPARISON WE WANT?
+    @Override
     public int compareTo(AStarNode node){
-        return (int)(this.totalCost - node.getTotalCost());
+        return Double.compare(this.totalCost, node.getTotalCost());
     }
 
 

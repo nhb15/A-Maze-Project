@@ -30,6 +30,8 @@ public class AStarDriver{
 	private static AStarNode temp;
 	private static AStarNode current;
 
+	Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
+
     /**
      * Regardless of which data structure we use to track visitedNodes, let's track the actual size in numNodesVisited above
      */
@@ -60,15 +62,26 @@ public class AStarDriver{
         }
 
         startNode = nodeArr[0][0];
-        destNode = nodeArr[WIDTHNODES - 1][HEIGHTNODES - 1];
+        startNode.setTotalCost(0);
+
+        destNode = nodeArr[18][18];
+
+		nodeArr[1][1].setObstacle(true);
 
         AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
+
+
 
         driver.AStar(startNode, destNode);
 
 
 
+        gui.updateConsideredGUI(driver.closed);
 
+		gui.updateRouteGUI(driver.route);
+
+		destNode.getButton().setBackground(Color.MAGENTA);
+		startNode.getButton().setBackground(Color.MAGENTA);
 
         //pqAdjacentNodes.add(nodeArr[0][0]);
 
@@ -138,7 +151,7 @@ public class AStarDriver{
      * @return FIXME either the full Stack, or a recursive call to pop? Need to pass to GUI as well
      */
   public Stack routeBuilder(AStarNode start, AStarNode end) {
-    	Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
+
     	AStarNode current = end; //current portion of path being added to linkedlist
     	
     	while(current!=start) { //loops until start is hit
@@ -158,9 +171,11 @@ public class AStarDriver{
      * @return set composed of all neighbors of input node
      * @see https://stackoverflow.com/questions/43816484/finding-the-neighbors-of-2d-array
      */
+
+    //FIXME: CHECK this for indexOutOfBounds for destination node 19
     public Set neighborNodes(AStarNode current) {
 
-    	//FIXME: neighbors needs to get initialized to something I think, like what data structure it is.
+
     	Set<AStarNode> neighbors = new HashSet<AStarNode>();
 
 		System.out.println();
@@ -180,10 +195,10 @@ public class AStarDriver{
     		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
     			//FIXME: debugging this seems like we're missing some(or at least some? like i = 0, j = 1)? I think it should be OR not AND
     			if((i!=row) || (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
-    				if(inBounds(i, j)) { //checks if considered node is within bounds of graph
+    				if(inBounds(i, j) && !nodeArr[i][j].getIsObstacle()) { //checks if considered node is within bounds of graph AND if the node is an obstacle
 
-						System.out.println(nodeArr[i][j].getIdxLocation());
     					neighbors.add(nodeArr[i][j]);
+
     				}
     			}
     		}
@@ -219,12 +234,16 @@ public class AStarDriver{
 		
 		//add start node to open list
 		open.add(start);
+		//FIXME ADD STARTNODE TO CLOSED
 		int tracker = 575;//initialize tracker variable used for hash key value
 		//while open is not empty, poll value from pqueue and assign to current
 		while(!open.isEmpty()) {
 			current = open.poll();
 
-			numNodesVisited++;
+
+			if (current != startNode) {
+				numNodesVisited++;
+			}
 
 			if (open.isEmpty()){
 				temp = current;
@@ -235,23 +254,39 @@ public class AStarDriver{
 				temp = current;
 			}
 
+			if (current.equals(destNode)){
+				routeBuilder(startNode, current);
+				return;
+			}
+
 			Set<AStarNode> listofNeighbors = neighborNodes(current);
 			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
 				//base case, if current is node, call route builder and quit for loop
-				//FIXME:  why are we comparing current to destnode in this foreach? Should it be node? we don't update current in any way during this or use node, so we arent actually checking neighbors
-				if(current.equals(destNode)) {
-					routeBuilder(startNode, current);
-					break;
+
+				if(node.equals(destNode)) {
+					destNode.setPrevious(temp);
+					routeBuilder(startNode, node);
+					return;
 				}
-				//checks if current value is in closed list and or an obstacle, if not adds to list
-				if(!closed.containsValue(current) && !current.isObstacle()) {
+				//checks if current value is in closed list, if not adds to list
+				if(!closed.containsValue(node)) {
 
-					closed.put("" + tracker, current);//adds current value to closed list using tracker as key for hash
+					node.setTotalCost(node.findTotalCost());//update current total cost with computed cost to destination and cost from initial
 
-					open.add(current);//add current value to open priority queue
+					/**FOR DEBUGGING PURPOSES:
+					 * INITIAL COST
+					 * COST FROM DEST
+					 */
+					node.setCostFromInitial(node.findCostFromInitial());
+					node.setEstimatedCostToDest(node.findEstimatedCostToDest());
 
-					//FIXME: I think we want to set the cost BEFORE we add them to the PQ
-					current.setTotalCost(current.findTotalCost());//update current total cost with computed cost to destination and cost from initial
+					closed.put("" + tracker, node);//adds current value to closed list using tracker as key for hash
+
+					open.add(node);//add current value to open priority queue
+
+
+
+
 					++tracker;
 				}
 			}

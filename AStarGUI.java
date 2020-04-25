@@ -45,6 +45,8 @@ public class AStarGUI extends JFrame implements ActionListener {
         }
 
 
+
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800,800);
         setVisible(true);
@@ -82,7 +84,8 @@ public class AStarGUI extends JFrame implements ActionListener {
      */
     public void updateRouteGUI(Stack<AStarNode> route){
 
-        for (AStarNode node : route){
+        while (!route.isEmpty()){
+            AStarNode node = route.pop();
             node.getButton().setBackground(Color.blue);
         }
 
@@ -96,6 +99,8 @@ public class AStarGUI extends JFrame implements ActionListener {
         for (AStarNode node : closed.values()){
             node.getButton().setBackground(Color.gray);
         }
+
+        revalidate();
     }
 
 }
