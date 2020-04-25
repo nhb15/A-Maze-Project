@@ -3,6 +3,7 @@ package AStarMazeProject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
 import java.util.Stack;
 
 /**
@@ -29,7 +30,7 @@ public class AStarGUI extends JFrame implements ActionListener {
                 int[] temp = {i,j};
                 JButton button = new JButton();
                 button.setActionCommand("" + i + ","+ j);
-                button.setBackground(Color.gray);
+                button.setBackground(Color.white);
                 button.addActionListener(this);
 
                 nodeArr[i][j].setButton(button);
@@ -59,7 +60,7 @@ public class AStarGUI extends JFrame implements ActionListener {
 
         AStarNode[][] nodeArr = AStarDriver.getNodeArr();
         if (nodeArr[xIdx][yIdx].getIsObstacle()) {
-            nodeArr[xIdx][yIdx].getButton().setBackground(Color.gray);
+            nodeArr[xIdx][yIdx].getButton().setBackground(Color.white);
             nodeArr[xIdx][yIdx].setObstacle(false);
         }
         else {
@@ -89,5 +90,12 @@ public class AStarGUI extends JFrame implements ActionListener {
     }
 
     //FIXME: NEED A NODES CONSIDERED UPDATE AS WELL
+
+    public void updateConsideredGUI(HashMap<String, AStarNode> closed){
+
+        for (AStarNode node : closed.values()){
+            node.getButton().setBackground(Color.gray);
+        }
+    }
 
 }

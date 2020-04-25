@@ -3,7 +3,7 @@ package AStarMazeProject;
 import javax.swing.*;
 import java.util.Set;
 
-public class AStarNode {
+public class AStarNode implements Comparable<AStarNode>{
 
     private double costFromInitial; //synonymous to g in literature
     private double estimatedCostToDest; //synonymous to h, the heuristic, in literature
@@ -172,6 +172,12 @@ public class AStarNode {
         return false;
 
         //return this.getIdxLocation() == node.getIdxLocation(); FANCY VERSION?
+    }
+
+
+    //FIXME: IS THIS THE RIGHT COMPARISON WE WANT?
+    public int compareTo(AStarNode node){
+        return (int)(this.totalCost - node.getTotalCost());
     }
 
 

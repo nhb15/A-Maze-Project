@@ -2,10 +2,7 @@ package AStarMazeProject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * A PROJECT MADE BY NATE AND JAKE
@@ -17,7 +14,7 @@ import java.util.Stack;
  *
  */
 
-public class AStarDriver<E  extends Comparable<E>> {
+public class AStarDriver{
 
     private static final int WIDTHNODES = 20;
     private static final int HEIGHTNODES = 20;
@@ -37,7 +34,7 @@ public class AStarDriver<E  extends Comparable<E>> {
      * Regardless of which data structure we use to track visitedNodes, let's track the actual size in numNodesVisited above
      */
 
-    private static AStarNode[] visitedNodes = new AStarNode[WIDTHNODES * HEIGHTNODES];
+    //private static AStarNode[] visitedNodes = new AStarNode[WIDTHNODES * HEIGHTNODES];
 
     /**
      * FOR NOW, we COULD use the standard priority queue so that we can get the project rolling. But, I'm not sure it's what we need
@@ -48,9 +45,11 @@ public class AStarDriver<E  extends Comparable<E>> {
 	PriorityQueue<AStarNode> open = new PriorityQueue<AStarNode>();
 	//create hashmap for closed set
 	HashMap<String, AStarNode> closed = new HashMap<String, AStarNode>();
-    
+
 
     public static void main(String[] args) {
+
+    	AStarDriver driver = new AStarDriver();
 
         for (int i = 0; i < WIDTHNODES; i++){
             for (int j = 0; j < HEIGHTNODES; j++){
@@ -64,6 +63,12 @@ public class AStarDriver<E  extends Comparable<E>> {
         destNode = nodeArr[WIDTHNODES - 1][HEIGHTNODES - 1];
 
         AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
+
+        driver.AStar(startNode, destNode);
+
+
+
+
 
         //pqAdjacentNodes.add(nodeArr[0][0]);
 
@@ -154,7 +159,10 @@ public class AStarDriver<E  extends Comparable<E>> {
      * @see https://stackoverflow.com/questions/43816484/finding-the-neighbors-of-2d-array
      */
     public Set neighborNodes(AStarNode current) {
-    	Set<AStarNode> neighbors = null;
+
+    	//FIXME: neighbors needs to get initialized to something I think, like what data structure it is.
+    	Set<AStarNode> neighbors = new HashSet<AStarNode>();
+
 		System.out.println();
     	int row     = current.getIdxLocation()[0];//I think this should get the row value from the node
     	int col     = current.getIdxLocation()[1];//should get column value from node
@@ -166,11 +174,15 @@ public class AStarDriver<E  extends Comparable<E>> {
 		 *
 		 */
 
+		//FIXME: Do we want to add Obstacles to the list of neighbors? Since we ONLY pop off ONE from the min-heap later, and it COULD be an obstacle, maybe it makes more sense to check here instead?
+
 		for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
     		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
-    			if((i!=row) && (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
+    			//FIXME: debugging this seems like we're missing some(or at least some? like i = 0, j = 1)? I think it should be OR not AND
+    			if((i!=row) || (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
     				if(inBounds(i, j)) { //checks if considered node is within bounds of graph
 
+						System.out.println(nodeArr[i][j].getIdxLocation());
     					neighbors.add(nodeArr[i][j]);
     				}
     			}
@@ -226,6 +238,7 @@ public class AStarDriver<E  extends Comparable<E>> {
 			Set<AStarNode> listofNeighbors = neighborNodes(current);
 			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
 				//base case, if current is node, call route builder and quit for loop
+				//FIXME:  why are we comparing current to destnode in this foreach? Should it be node? we don't update current in any way during this or use node, so we arent actually checking neighbors
 				if(current.equals(destNode)) {
 					routeBuilder(startNode, current);
 					break;
@@ -237,6 +250,7 @@ public class AStarDriver<E  extends Comparable<E>> {
 
 					open.add(current);//add current value to open priority queue
 
+					//FIXME: I think we want to set the cost BEFORE we add them to the PQ
 					current.setTotalCost(current.findTotalCost());//update current total cost with computed cost to destination and cost from initial
 					++tracker;
 				}
