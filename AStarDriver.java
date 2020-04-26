@@ -16,8 +16,8 @@ import java.util.*;
 
 public class AStarDriver{
 
-    private static final int WIDTHNODES = 20;
-    private static final int HEIGHTNODES = 20;
+    public static final int WIDTHNODES = 20;
+    public static final int HEIGHTNODES = 20;
 
     private static int numNodesVisited = 0;
 
@@ -30,31 +30,21 @@ public class AStarDriver{
 	private static AStarNode temp;
 	private static AStarNode current;
 
-	Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
+	private static Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
 
-    /**
-     * Regardless of which data structure we use to track visitedNodes, let's track the actual size in numNodesVisited above
-     */
+	//create priority queue for open set
+	private static PriorityQueue<AStarNode> open = new PriorityQueue<AStarNode>();
 
-    //private static AStarNode[] visitedNodes = new AStarNode[WIDTHNODES * HEIGHTNODES];
-
-    /**
-     * FOR NOW, we COULD use the standard priority queue so that we can get the project rolling. But, I'm not sure it's what we need
-     * //private static PriorityQueue<AStarNode> pqAdjacentNodes;
-     */
-    
-    //create priority queue for open set
-	PriorityQueue<AStarNode> open = new PriorityQueue<AStarNode>();
 	//create hashmap for closed set
-	HashMap<String, AStarNode> closed = new HashMap<String, AStarNode>();
+	private static HashMap<String, AStarNode> closed = new HashMap<String, AStarNode>();
 
 
     public static void main(String[] args) {
 
-    	AStarDriver driver = new AStarDriver();
+    	//AStarDriver driver = new AStarDriver();
 
         for (int i = 0; i < WIDTHNODES; i++){
-            for (int j = 0; j < HEIGHTNODES; j++){
+				for (int j = 0; j < HEIGHTNODES; j++){
                 int[] temp = {i,j};
                 AStarNode node = new AStarNode(temp);
                 nodeArr[i][j] = node;
@@ -64,27 +54,33 @@ public class AStarDriver{
         startNode = nodeArr[0][0];
         startNode.setTotalCost(0);
 
-        destNode = nodeArr[5][5];
+        destNode = nodeArr[10][5];
+
+
+
+        AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
 
 		nodeArr[1][1].setObstacle(true);
 		nodeArr[3][3].setObstacle(true);
 		nodeArr[3][4].setObstacle(true);
+		nodeArr[4][5].setObstacle(true);
+		nodeArr[4][6].setObstacle(true);
 
-        AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
+		nodeArr[1][1].getButton().setBackground(Color.BLACK);
+		nodeArr[3][3].getButton().setBackground(Color.BLACK);
+		nodeArr[3][4].getButton().setBackground(Color.BLACK);
+		nodeArr[4][5].getButton().setBackground(Color.BLACK);
+		nodeArr[4][6].getButton().setBackground(Color.BLACK);
+
+        AStar(startNode, destNode);
 
 
 
-        driver.AStar(startNode, destNode);
+        gui.updateConsideredGUI(closed);
 
+		gui.updateRouteGUI(route);
 
-
-        gui.updateConsideredGUI(driver.closed);
-
-		gui.updateRouteGUI(driver.route);
-
-		destNode.getButton().setBackground(Color.MAGENTA);
-		startNode.getButton().setBackground(Color.MAGENTA);
-
+		setStartEndPurple();
         //pqAdjacentNodes.add(nodeArr[0][0]);
 
         /*We'll want to make a priority queue that takes Nodes with f as their priority value, as well as a seperate data structure to hold
@@ -145,6 +141,7 @@ public class AStarDriver{
          * 
          */
     }
+
 /**
      * function to build path from AStar stored values
      * uses stack to store nodes in path, using due to First In Last Out print ability
@@ -152,7 +149,7 @@ public class AStarDriver{
      * @param AStarNode end node
      * @return FIXME either the full Stack, or a recursive call to pop? Need to pass to GUI as well
      */
-  public Stack routeBuilder(AStarNode start, AStarNode end) {
+  public static void routeBuilder(AStarNode start, AStarNode end) {
 
     	AStarNode current = end; //current portion of path being added to linkedlist
     	
@@ -161,7 +158,7 @@ public class AStarDriver{
     		current = current.getPrevious(); //update current to previous
     	}
     	
-    	return route;//FIXME edit to properly print stack first in last out
+    	//return route;//FIXME edit to properly print stack first in last out
     }
 	
     /**
@@ -175,12 +172,12 @@ public class AStarDriver{
      */
 
     //FIXME: CHECK this for indexOutOfBounds for destination node 19
-    public Set neighborNodes(AStarNode current) {
+    private static Set neighborNodes(AStarNode current) {
 
 
     	Set<AStarNode> neighbors = new HashSet<AStarNode>();
 
-		System.out.println();
+		//System.out.println();
     	int row     = current.getIdxLocation()[0];//I think this should get the row value from the node
     	int col     = current.getIdxLocation()[1];//should get column value from node
 
@@ -195,7 +192,7 @@ public class AStarDriver{
 
 		for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
     		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
-    			//FIXME: debugging this seems like we're missing some(or at least some? like i = 0, j = 1)? I think it should be OR not AND
+
     			if((i!=row) || (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
     				if(inBounds(i, j) && !nodeArr[i][j].getIsObstacle()) { //checks if considered node is within bounds of graph AND if the node is an obstacle
 
@@ -216,7 +213,7 @@ public class AStarDriver{
      * @return boolean; true if within map, false otherwise
      * @see https://stackoverflow.com/questions/43816484/finding-the-neighbors-of-2d-array
      */
-    public boolean inBounds (int row, int col) {
+    public static boolean inBounds (int row, int col) {
     	if (row < 0 || col < 0) {
     		return false;
     	}
@@ -232,7 +229,7 @@ public class AStarDriver{
 	 * @param start: starting node in map
 	 * @param goal: target node in map
 	 */
-	public void AStar(AStarNode start, AStarNode goal){
+	public static void AStar(AStarNode start, AStarNode goal){
 		
 		//add start node to open list
 		open.add(start);
@@ -241,8 +238,8 @@ public class AStarDriver{
 		//while open is not empty, poll value from pqueue and assign to current
 		while(!open.isEmpty()) {
 			current = open.poll();
-			System.out.println(current.getIdxLocation()[0]);
-			System.out.println(current.getIdxLocation()[1]);
+			//System.out.println(current.getIdxLocation()[0]);
+			//System.out.println(current.getIdxLocation()[1]);
 
 
 			if (current != startNode) {
@@ -328,5 +325,26 @@ public class AStarDriver{
     public static void setDestNode(AStarNode destNode) {
         AStarDriver.destNode = destNode;
     }
+
+	public static Stack<AStarNode> getRoute() {
+		return route;
+	}
+
+	public static HashMap<String, AStarNode> getClosed() {
+		return closed;
+	}
+
+	public static PriorityQueue<AStarNode> getOpen() {
+		return open;
+	}
+
+	public static void setOpen(PriorityQueue<AStarNode> open) {
+		AStarDriver.open = open;
+	}
+
+	public static void setStartEndPurple(){
+		destNode.getButton().setBackground(Color.MAGENTA);
+		startNode.getButton().setBackground(Color.MAGENTA);
+	}
 
 }
