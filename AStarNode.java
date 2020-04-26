@@ -5,21 +5,21 @@ import java.util.Set;
 
 public class AStarNode implements Comparable<AStarNode>{
 
-    private double costFromInitial; //synonymous to g in literature
-    private double estimatedCostToDest; //synonymous to h, the heuristic, in literature
+    private double costFromInitial; //synonymous to g in literature, the cost from startNode
+    private double estimatedCostToDest; //synonymous to h, the heuristic, in literature, the calculated cost to destNode
 
     private double totalCost; //synonymous to f, the sum of two variables above
-    //Sorted stack - research heuristic ideas and bring
+
     private AStarNode previous; //used to assist in route building by linking nodes in the path found to one another
 
     private JButton button; //This button will allow the user to click on it to include an obstacle
-                            //The color correlates to whether it is unused (white/gray) , part of the path (blue), or is an obstacle (black)
+                            //The color correlates to whether it is unused (white) , part of the path (blue), was considered(gray), or is an obstacle (black)
 
     private boolean isObstacle; //The tracker for whether a node is an obstacle or a potential path member
 
-    private int[] idxLocation;
+    private int[] idxLocation; //The index for a node in the map
 
-    private static Set<AStarNode> listofNeighbors;
+    private static Set<AStarNode> listofNeighbors; //The potential 8 nodes in the map neighboring this node
 
     /**
      * Constructor to setup a new node, includes index location in gui
@@ -28,21 +28,26 @@ public class AStarNode implements Comparable<AStarNode>{
     public AStarNode(int[] idxLocation){
         this.idxLocation = idxLocation;
 
+        /**
+         * Setting these costs to infinity since they will be updated before ever conisdered
+         */
         this.costFromInitial = Double.POSITIVE_INFINITY;
         this.estimatedCostToDest = Double.POSITIVE_INFINITY;
         this.totalCost = Double.POSITIVE_INFINITY;
 
     }
 
-    /**
-     * This method sets a node's cost from our starting location. It grabs the number of nodes visited already and adds 1, since if this node is picked it will be that value.
-     * Technically, this +1 doesn't actually matter as long as we're consistent, but it makes sense.
-     */
+
     public void setCostFromInitial(double cost){
 
         this.costFromInitial = cost;
     }
 
+    /**
+     * This method sets a node's cost from our starting location. It grabs the number of nodes visited already and adds 1, since if this node is picked it will be that value.
+     * Technically, this +1 doesn't actually matter as long as we're consistent, but it makes sense.
+     * @return
+     */
     public double findCostFromInitial(){
         return AStarDriver.getNumNodesVisited() + 1;
     }
@@ -67,29 +72,6 @@ public class AStarNode implements Comparable<AStarNode>{
          * MORE EFFICIENT to use diagonal paths and the algorithm promotes that.
          */
 
-
-
-
-        //node.estimatedCostToDest = heuristic to final node - estimated since we don't know if there are obstacles in the way
-        /**
-         * POSSIBLE HEURISTIC IDEAS:
-         *
-         * 1. We do a combination of hypotenuse of the array values AND a search ahead of each node (a few nodes ahead to see if there are obstacles?)
-         *
-         * 2. We follow what's on the stanford link: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7 - would depend on whether we want diagonal control
-         *
-         * 3. In a probe ahead of the node, we could check not ONLY for obstacles but also the edge of the map ( or do we just make the edge of the map an immovable obstacle?)
-         */
-
-        /**
-         * function heuristic(node) =
-         *     dx = abs(node.x - goal.x)
-         *     dy = abs(node.y - goal.y)
-         *     return D * (dx + dy) + (D2 - 2 * D) * min(dx, dy)
-         */
-
-
-
     }
 
     public void setEstimatedCostToDest(double cost){
@@ -106,10 +88,13 @@ public class AStarNode implements Comparable<AStarNode>{
         this.totalCost = totalCost;
     }
 
+    /**
+     * The total cost is the sum of the costFromInitial and the estimatedCostToDestination
+     * @return totalCost
+     */
     public double findTotalCost(){
         return (findCostFromInitial() + findEstimatedCostToDest());
     }
-
 
     public boolean isObstacle() {
         return isObstacle;
@@ -149,7 +134,11 @@ public class AStarNode implements Comparable<AStarNode>{
     }
 
 
-    //FIXME FOR PRETTINESS?
+    /**
+     * This equals method overrides any other methods to return true if the nodes compared have identical map indices.
+     * @param obj of another node
+     * @return boolean on node equality
+     */
     @Override
     public boolean equals(Object obj){
         AStarNode node = (AStarNode)obj;
@@ -158,22 +147,16 @@ public class AStarNode implements Comparable<AStarNode>{
             return true;
         }
 
-        int[] tempIdx = this.getIdxLocation();
-        int tempX = tempIdx[0];
-        int tempY = tempIdx[1];
-
-        int[] nodeIdx = node.getIdxLocation();
-        int nodeX = nodeIdx[0];
-        int nodeY = nodeIdx[1];
-
-        if (tempX == nodeX && tempY == nodeY){
-            return true;
-        }
         return false;
 
-        //return this.getIdxLocation() == node.getIdxLocation(); FANCY VERSION?
     }
 
+    /**
+     * compareTo overrides the comparable interface as necessary to allow for object comparison
+     * This allows the smallest cost node to hit the top of the priority queue
+     * @param node
+     * @return the comparison value based on each node (see: Double.compare for more info)
+     */
     @Override
     public int compareTo(AStarNode node){
         return Double.compare(this.totalCost, node.getTotalCost());

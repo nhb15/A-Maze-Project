@@ -16,50 +16,82 @@ import java.util.*;
 
 public class AStarDriver{
 
+	/**
+	 * WIDTHNODES and HEIGHTNODES hold the size of the GUI and node array for path finding
+	 */
     public static final int WIDTHNODES = 20;
     public static final int HEIGHTNODES = 20;
 
-    private static int numNodesVisited = 0;
+	/**
+	 * numNodesVisited tracks how many nodes are in our path, used in analysis of the cost
+	 */
+	private static int numNodesVisited = 0;
 
+	/**
+	 * nodeArr is a standard 2D array that holds all our AStarNodes
+	 */
     private static AStarNode[][] nodeArr = new AStarNode[WIDTHNODES][HEIGHTNODES];
 
-
+	/**
+	 * startNode and destNode allow us to change where our path starts and ends. They initialize to [0,0] and [5,5], but could be anything.
+	 */
     private static AStarNode startNode;
     private static AStarNode destNode;
 
+	/**
+	 * temp and current are AStarNodes used in the AStar method AND the routebuilder to keep track of which node we are
+	 * CURRENTLY processing and which node we need to save to pass to AStarNode.PREVIOUS (temp)
+	 */
 	private static AStarNode temp;
 	private static AStarNode current;
 
+	/**
+	 * route is an AStarNode Stack holding the nodes in our path, already found
+	 */
 	private static Stack<AStarNode> route = new Stack<AStarNode>(); //linked list to hold route
 
-	//create priority queue for open set
+	/**
+	 * open holds POTENTIAL successor nodes(for example, neighbor nodes that qualify) for pathbuilding in AStar
+	 * The PriorityQueue sorts based on AStarNode.totalCost where the first node has the lowest cost
+	 * open is cleared out on each subsequenet node
+	 */
 	private static PriorityQueue<AStarNode> open = new PriorityQueue<AStarNode>();
 
-	//create hashmap for closed set
+	/**
+	 * closed holds already considered nodes (for example, a neighbor node that did NOT have the lowest cost in
+	 * PriorityQueue open. These nodes are not considered again in the same AStar calculation.
+	 */
 	private static HashMap<String, AStarNode> closed = new HashMap<String, AStarNode>();
 
 
     public static void main(String[] args) {
 
-    	//AStarDriver driver = new AStarDriver();
-
-        for (int i = 0; i < WIDTHNODES; i++){
+		/**
+		 * This nested for loop initializes the node array with new nodes. This is used and matches the GUI.
+		 */
+		for (int i = 0; i < WIDTHNODES; i++){
 				for (int j = 0; j < HEIGHTNODES; j++){
-                int[] temp = {i,j};
-                AStarNode node = new AStarNode(temp);
-                nodeArr[i][j] = node;
+                	int[] temp = {i,j};
+                	AStarNode node = new AStarNode(temp);
+                	nodeArr[i][j] = node;
             }
         }
 
+		/**
+		 * Here, we initialize startNode, startNodes cost(to be TECHNICALLY correct), and destNode to our desired values.
+		 */
         startNode = nodeArr[0][0];
         startNode.setTotalCost(0);
 
-        destNode = nodeArr[10][5];
-
+        destNode = nodeArr[5][5];
 
 
         AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
 
+		/**
+		 * Below are example obstacles that the GUI/program can start with. We can change these at will or maybe randomize them
+		 * for show and tell.
+		 */
 		nodeArr[1][1].setObstacle(true);
 		nodeArr[3][3].setObstacle(true);
 		nodeArr[3][4].setObstacle(true);
@@ -72,16 +104,22 @@ public class AStarDriver{
 		nodeArr[4][5].getButton().setBackground(Color.BLACK);
 		nodeArr[4][6].getButton().setBackground(Color.BLACK);
 
-        AStar(startNode, destNode);
+		for (int i = 0; i < 10; i++){
+			nodeArr[3][i].setObstacle(true);
+			nodeArr[3][i].getButton().setBackground(Color.BLACK);
+		}
 
 
+		/**
+		 * Calling AStar is obviously our main call in the driver here - this will start calculating the route
+		 */
+		AStar(startNode, destNode);
 
-        gui.updateConsideredGUI(closed);
 
-		gui.updateRouteGUI(route);
-
-		setStartEndPurple();
-        //pqAdjacentNodes.add(nodeArr[0][0]);
+		/**
+		 * Once AStar finishes, we can update our GUI. This will update the considered nodes (closed), the path itself(route), and start/end nodes if necessary.
+		 */
+		gui.updateGUI(route, closed);
 
         /*We'll want to make a priority queue that takes Nodes with f as their priority value, as well as a seperate data structure to hold
             nodes we have already visited
@@ -108,34 +146,7 @@ public class AStarDriver{
                         if yes ---> skip node
                         if no  ---> 1) evaluate and update costFromInitial, estimatedCostToDest, and totalCost for each neighbor
                                     2) add to priority queue
-                                    
-                                    
 
-        */
-
-        /**
-         * TASKS TO FOCUS ON:
-         *
-         * 1. (NATE) Make list of nodes IN driver class, passable to GUI
-         * 2. Make
-         * 3. (NATE) Priority Queue that accepts F value as comparator (in driver)
-         * 4. (JAKE) Decide on data structure for closed set (and have reasons for report) see lines 106-108
-         * 5. (BOTH) Pass or update information on GUI once node is added to closed set (AKA the path - turn blue) https://www.redblobgames.com/pathfinding/a-star/introduction.html
-         *      -unexplored, explored, actual path (if we do this, we also need to pass explored nodes - very similar to actual path information pass)
-         *      -Consider best way to pass information from GUI back to driver for updated obstacles as well.
-         * 6. (NATE) Create method to generate costFromInitial - (POSSIBLY: counting nodes in VISITED list + 1 - most likely)
-         * 7. (NATE) Create method to generate heuristic (estimatedCostToDest) - Diagonal Distance - http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
-         * 8. (JAKE) Create method to inserts STARTNODE (AND COMPLETES JAKE'S NOTES FROM ABOVE)
-         * 9. (NATE) Allow obstacles to be reversed
-         * 10. (NATE) lookup github making someone else an admin
-         * 11. (JAKE) Build route building method that can be recursively called to build the route and print it out
-         *
-         * ONCE ABOVE IS DONE:
-         * 10. Write a README
-         * 11. Create Presentation (8-15)
-         * 11. .If TIME ALLOWS, change heuristic to show different speeds/efficiency
-         
-         
          * 4. The closed or visited list needs to have both fast insertion and fast search, and a hashmap has both O(1) average for 
          *    both those functions (See big O cheat sheet). Only downside is hashmaps do not support access functions(unclear what that is tbh).
          * 
@@ -143,22 +154,22 @@ public class AStarDriver{
     }
 
 /**
-     * function to build path from AStar stored values
-     * uses stack to store nodes in path, using due to First In Last Out print ability
+     * function to build path from AStar calculated and stored node PREVIOUS values
+     * uses ROUTE stack to store nodes in path, using due to First In Last Out print ability
      * @param AStarNode start node
      * @param AStarNode end node
-     * @return FIXME either the full Stack, or a recursive call to pop? Need to pass to GUI as well
      */
   public static void routeBuilder(AStarNode start, AStarNode end) {
 
-    	AStarNode current = end; //current portion of path being added to linkedlist
+	  /**
+	   * set AStarNode current to begin at the END of the path, and work our way backwards using the previous property.
+	   */
+	  AStarNode current = end; //current portion of path being added to linkedlist
     	
-    	while(current!=start) { //loops until start is hit
-    		route.add(current); //add current node to list
+	  while(current!=start) { //loops until start is hit
+	  		route.add(current); //add current node to list
     		current = current.getPrevious(); //update current to previous
-    	}
-    	
-    	//return route;//FIXME edit to properly print stack first in last out
+	  }
     }
 	
     /**
@@ -171,33 +182,29 @@ public class AStarDriver{
      * @see https://stackoverflow.com/questions/43816484/finding-the-neighbors-of-2d-array
      */
 
-    //FIXME: CHECK this for indexOutOfBounds for destination node 19
+    //FIXME: CHECK this for indexOutOfBounds
     private static Set neighborNodes(AStarNode current) {
 
-
-    	Set<AStarNode> neighbors = new HashSet<AStarNode>();
-
-		//System.out.println();
-    	int row     = current.getIdxLocation()[0];//I think this should get the row value from the node
-    	int col     = current.getIdxLocation()[1];//should get column value from node
+		/**
+		 * neighbors can be a Set as each one needs to be unique - and a hashset allows for constant time retrieval.
+		 */
+		Set<AStarNode> neighbors = new HashSet<AStarNode>();
 
 		/**
-		 * If above doesn't work, we can do:
-		 * int[] tempIdx = current.getIdxLocation();
-		 * int tempX = tempIdx[0];
-		 *
+		 * Let's grab the index information from the node to determine its neighbors
 		 */
+    	int row = current.getIdxLocation()[0];//I think this should get the row value from the node
+    	int col = current.getIdxLocation()[1];//should get column value from node
 
-		//FIXME: Do we want to add Obstacles to the list of neighbors? Since we ONLY pop off ONE from the min-heap later, and it COULD be an obstacle, maybe it makes more sense to check here instead?
-
+		/**
+		 * This nested for loop rotates through all 8 potential array neighbors and checks if they are in bounds of the array AND if they are an obstacle
+		 */
 		for(int i = row-1; i<=row+1; ++i) {//scans through all nearby row positions
     		for(int j = col-1; j<=col+1; ++j) {//scans through all nearby row positions
-
     			if((i!=row) || (j!=col)) {//checks if considered node is equal to current node, if not continues to next line
     				if(inBounds(i, j) && !nodeArr[i][j].getIsObstacle()) { //checks if considered node is within bounds of graph AND if the node is an obstacle
-
+						//If the node passes all these checks, we can add it to our set.
     					neighbors.add(nodeArr[i][j]);
-
     				}
     			}
     		}
@@ -233,19 +240,24 @@ public class AStarDriver{
 		
 		//add start node to open list
 		open.add(start);
-		//FIXME ADD STARTNODE TO CLOSED
+
 		int tracker = 575;//initialize tracker variable used for hash key value
+
 		//while open is not empty, poll value from pqueue and assign to current
 		while(!open.isEmpty()) {
 			current = open.poll();
-			//System.out.println(current.getIdxLocation()[0]);
-			//System.out.println(current.getIdxLocation()[1]);
 
-
+			/**
+			 * Since we already assume startNode as a numNodeVisited, increment the counter if current is anything but startNode.
+			 */
 			if (current != startNode) {
 				numNodesVisited++;
 			}
 
+			/**
+			 * This if/else statement sets the previous values of the nodes to the appropriate value
+			 * If open is empty, that means we're on the first run of our algorithm, and there's nothing to set for previous
+			 */
 			if (open.isEmpty()){
 				temp = current;
 			}
@@ -255,28 +267,38 @@ public class AStarDriver{
 				temp = current;
 			}
 
-			if (current.equals(destNode)){
-				routeBuilder(startNode, current);
-				return;
-			}
-
-
+			/**
+			 * Let listOfNeighbors be the local copy of neighbors
+			 */
 			Set<AStarNode> listofNeighbors = neighborNodes(current);
-			open.clear();
-			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
-				//base case, if current is node, call route builder and quit for loop
 
+			/**
+			 * We need to clear out potential nodes in open each node iteration
+			 * example: on our first run, if startNode is 0,0 - a neighbor is 1,0. But it might still be in
+			 * open list by node 5,5 if we don't clear it.
+			 */
+			open.clear();
+
+			/**
+			 * For each node in list of neighbors, let's:
+			 * 1. check if this neighbor IS the destination. If so, build the route.
+			 * 2. IF this node was not already considered(since a node could be neighbor to more than one object in the path),
+			 * find the cost associated with the node and add it to the considered list and potential open list.
+			 */
+			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
+
+				//base case, if node is destination, call route builder and quit for loop
 				if(node.equals(destNode)) {
 					destNode.setPrevious(temp);
 					routeBuilder(startNode, node);
 					return;
 				}
-				//checks if current value is in closed list, if not adds to list
+				//checks if current value is in closed list, if not, calculates cost and adds to list
 				if(!closed.containsValue(node)) {
 
 					node.setTotalCost(node.findTotalCost());//update current total cost with computed cost to destination and cost from initial
 
-					/**FOR DEBUGGING PURPOSES:
+					/**FOR DEBUGGING PURPOSES OR FUTURE GUI DEVELOPMENT:
 					 * INITIAL COST
 					 * COST FROM DEST
 					 */
@@ -287,13 +309,17 @@ public class AStarDriver{
 
 					open.add(node);//add current value to open priority queue
 
-					++tracker;
+					++tracker; //for hash
 				}
 			}
 		}
     	        
     }
 
+	/**
+	 *Below are ALL the getters and setters necessary for the algorithm.
+	 * The getters retrieve that variable or data structure, and the setters alter the value.
+	 */
     public static AStarNode[][] getNodeArr() {
         return nodeArr;
     }
@@ -342,6 +368,10 @@ public class AStarDriver{
 		AStarDriver.open = open;
 	}
 
+	/**
+	 * This method re-colors the start and end node in the GUI. This COULD live in the GUI, but thought the driver
+	 * would be OK since the nodes live here.
+	 */
 	public static void setStartEndPurple(){
 		destNode.getButton().setBackground(Color.MAGENTA);
 		startNode.getButton().setBackground(Color.MAGENTA);
