@@ -1,6 +1,5 @@
 package AStarMazeProject;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
@@ -83,7 +82,7 @@ public class AStarDriver{
         startNode = nodeArr[0][0];
         startNode.setTotalCost(0);
 
-        destNode = nodeArr[5][5];
+        destNode = nodeArr[12][12];
 
 
         AStarGUI gui = new AStarGUI(WIDTHNODES, HEIGHTNODES);
@@ -121,36 +120,6 @@ public class AStarDriver{
 		 */
 		gui.updateGUI(route, closed);
 
-        /*We'll want to make a priority queue that takes Nodes with f as their priority value, as well as a seperate data structure to hold
-            nodes we have already visited
-        
-         1) create priority queue that takes Nodes and uses their f value as the comparator (TOCHECK LIST)
-                  below is from: https://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
-                  
-           public PriorityQueue(int initialCapacity,
-             Comparator<? super E> comparator)
-                  Creates a PriorityQueue with the specified initial capacity that orders its elements according to the specified comparator.
-         2) Create a data structure that is easily searched (VISITED LIST), which will hold the nodes we have already considered 
-            This will be a good place to focus in on the report, I think, as it's a good demonstration of when we need a data structure
-            that we can quickly search, but not necessarily remove from or alter
-            
-            From there, we'll want to initialize all the distances in each node to infinity, as well as initializing each node's
-            previous pointer to null
-            
-            We first enter our start node to the Priority Queue and the visited hashmap (do we add the start node here or in the while loop?) 
-            then enter a while loop until priority queue is empty that:
-                1)Pops top prioritized value off of queue and assigns to current node
-                2)Adds current to visited database, need to figure out hash method, right now have it written to use strings as a key
-                3)BASE CASE: if current node is goal, return route by calling route building method (adding to list of tasks)
-                4)Else, for each neighbor of current, check if neighbor is already in the visited hashmap. 
-                        if yes ---> skip node
-                        if no  ---> 1) evaluate and update costFromInitial, estimatedCostToDest, and totalCost for each neighbor
-                                    2) add to priority queue
-
-         * 4. The closed or visited list needs to have both fast insertion and fast search, and a hashmap has both O(1) average for 
-         *    both those functions (See big O cheat sheet). Only downside is hashmaps do not support access functions(unclear what that is tbh).
-         * 
-         */
     }
 
 /**
@@ -245,6 +214,8 @@ public class AStarDriver{
 
 		//while open is not empty, poll value from pqueue and assign to current
 		while(!open.isEmpty()) {
+
+
 			current = open.poll();
 
 			/**

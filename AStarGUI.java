@@ -57,7 +57,6 @@ public class AStarGUI extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent event) {
 
-
         //This getActionCommand allows us to use constant time retrieval of which button is pushed
         String[] indices = event.getActionCommand().split(",");
         int xIdx = Integer.parseInt(indices[0]);
@@ -105,10 +104,15 @@ public class AStarGUI extends JFrame implements ActionListener {
 
             node.setObstacle(false);
 
+            //let's clear out the route, the considered nodes, and anything else critical before making a new one:
             clearAll();
 
+            /**
+             * Create a new path by calling AStar again, which builds the route within its own call
+             */
             AStarDriver.AStar(AStarDriver.getStartNode(), AStarDriver.getDestNode());
 
+            //With our new path, update the GUI to represent it.
             updateGUI(AStarDriver.getRoute(), AStarDriver.getClosed());
 
         }
@@ -173,7 +177,7 @@ public class AStarGUI extends JFrame implements ActionListener {
 
     /**
      * function clears any necessary data structures in AStar in order to restart the GUI path.
-     * Could live in AStarDriver since that data lives there but is primarily only ever needed in the GUI. 
+     * Could live in AStarDriver since that data lives there but is primarily only ever needed in the GUI.
      */
     public void clearAll(){
         AStarDriver.getClosed().clear();

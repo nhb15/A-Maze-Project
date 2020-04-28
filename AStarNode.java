@@ -59,6 +59,12 @@ public class AStarNode implements Comparable<AStarNode>{
      */
     public double findEstimatedCostToDest(){
 
+
+        /**
+         * The idea is "D"(from the source) is the cost for moving to an adjacent square. In our case, there's no cost associated with it so we use 1, but we put it in a variable for clarity.
+         * We multiple the cost to move by the actual change in graph indices, but SUBTRACT the saved costs from using any diagonal paths. This means it's
+         * MORE EFFICIENT to use diagonal paths and the algorithm promotes that.
+         */
         double xChange = Math.abs(idxLocation[0] - AStarDriver.getDestNode().idxLocation[0]);
         double yChange = Math.abs(idxLocation[1] - AStarDriver.getDestNode().idxLocation[1]);
         double costToMoveSquares = 1;
@@ -66,11 +72,7 @@ public class AStarNode implements Comparable<AStarNode>{
 
         //This formula is from Stanford's theory crafting: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#S7
         return costToMoveSquares * (xChange + yChange) + (diagonalSavings - 2 * costToMoveSquares) * Math.min(xChange, yChange);
-        /**
-         * The idea is "D"(from the source) is the cost for moving to an adjacent square. In our case, there's no cost associated with it so we use 1, but we put it in a variable for clarity.
-         * We multiple the cost to move by the actual change in graph indices, but SUBTRACT the saved costs from using any diagonal paths. This means it's
-         * MORE EFFICIENT to use diagonal paths and the algorithm promotes that.
-         */
+
 
     }
 
