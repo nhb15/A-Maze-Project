@@ -85,7 +85,7 @@ public class AStarGUI extends JFrame implements ActionListener {
             if (AStarDriver.getRoute().contains(node)) {
 
                 //let's clear out the route, the considered nodes, and anything else critical before making a new one:
-                clearAll();
+                AStarDriver.clearAll();
 
                 /**
                  * Create a new path by calling AStar again, which builds the route within its own call
@@ -105,7 +105,7 @@ public class AStarGUI extends JFrame implements ActionListener {
             node.setObstacle(false);
 
             //let's clear out the route, the considered nodes, and anything else critical before making a new one:
-            clearAll();
+            AStarDriver.clearAll();
 
             /**
              * Create a new path by calling AStar again, which builds the route within its own call
@@ -153,7 +153,6 @@ public class AStarGUI extends JFrame implements ActionListener {
      * @param route holds the path
      * @param closed holds the considered nodes
      */
-
     public void updateGUI(Stack<AStarNode> route, HashMap<String, AStarNode> closed) {
 
         for (int i = 0; i < AStarDriver.WIDTHNODES; i++) {
@@ -175,13 +174,4 @@ public class AStarGUI extends JFrame implements ActionListener {
         revalidate();
     }
 
-    /**
-     * function clears any necessary data structures in AStar in order to restart the GUI path.
-     * Could live in AStarDriver since that data lives there but is primarily only ever needed in the GUI.
-     */
-    public void clearAll(){
-        AStarDriver.getClosed().clear();
-        AStarDriver.getOpen().clear();
-        AStarDriver.getRoute().clear();
-    }
 }

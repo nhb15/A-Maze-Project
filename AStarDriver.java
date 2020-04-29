@@ -103,10 +103,6 @@ public class AStarDriver{
 		nodeArr[4][5].getButton().setBackground(Color.BLACK);
 		nodeArr[4][6].getButton().setBackground(Color.BLACK);
 
-		for (int i = 0; i < 10; i++){
-			nodeArr[3][i].setObstacle(true);
-			nodeArr[3][i].getButton().setBackground(Color.BLACK);
-		}
 
 
 		/**
@@ -227,9 +223,9 @@ public class AStarDriver{
 
 			/**
 			 * This if/else statement sets the previous values of the nodes to the appropriate value
-			 * If open is empty, that means we're on the first run of our algorithm, and there's nothing to set for previous
+			 * If current is startNode, that means we're on the first run of our algorithm, and there's nothing to set for previous
 			 */
-			if (open.isEmpty()){
+			if (current.equals(startNode)){
 				temp = current;
 			}
 			else {
@@ -241,7 +237,8 @@ public class AStarDriver{
 			/**
 			 * Let listOfNeighbors be the local copy of neighbors
 			 */
-			Set<AStarNode> listofNeighbors = neighborNodes(current);
+			Set<AStarNode> listOfNeighbors = neighborNodes(current);
+			int numNeighbors = listOfNeighbors.size();
 
 			/**
 			 * We need to clear out potential nodes in open each node iteration
@@ -256,7 +253,7 @@ public class AStarDriver{
 			 * 2. IF this node was not already considered(since a node could be neighbor to more than one object in the path),
 			 * find the cost associated with the node and add it to the considered list and potential open list.
 			 */
-			for (@SuppressWarnings("unused") AStarNode node: listofNeighbors){
+			for (@SuppressWarnings("unused") AStarNode node: listOfNeighbors){
 
 				//base case, if node is destination, call route builder and quit for loop
 				if(node.equals(destNode)) {
@@ -282,8 +279,13 @@ public class AStarDriver{
 
 					++tracker; //for hash
 				}
+
 			}
+
 		}
+
+		System.out.println( "Whoops! Something went wrong - Looks like our path is unreachable or the path must consider a node on the closed path. " +
+				"Please open up the path to allow this implementation of A* to run again. ");
     	        
     }
 
@@ -346,6 +348,23 @@ public class AStarDriver{
 	public static void setStartEndPurple(){
 		destNode.getButton().setBackground(Color.MAGENTA);
 		startNode.getButton().setBackground(Color.MAGENTA);
+	}
+
+	/**
+	 * function clears any necessary data structures in AStar in order to restart the GUI path.
+	 */
+	public static void clearAll(){
+
+		route.clear();
+		open.clear();
+		closed.clear();
+		/**
+		for (int i = 0; i < WIDTHNODES; i++) {
+			for (int j = 0; j < HEIGHTNODES; j++) {
+				nodeArr[i][j].setPrevious(null);
+			}
+		}
+		 */
 	}
 
 }
